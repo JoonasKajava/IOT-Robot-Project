@@ -16,6 +16,7 @@
 #include <sys/time.h>
 #include "serial1.h"
 #include <unistd.h>
+#include <stdlib.h>
 #define SUMO 0
 #define LINE 1
 #define MAZE 2
