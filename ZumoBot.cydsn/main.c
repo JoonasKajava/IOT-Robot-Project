@@ -137,17 +137,16 @@ void backInLine(void);
 void zmain(void)
 {
     motor_start(); // enable motor controller
-    IR_Start();
-    reflectance_start();
+    IR_Start(); //enable IR
+    reflectance_start(); //enable reflectancing
     motor_forward(0, 0); // set speed to zero to stop motors
-    reflectance_set_threshold(23500, 9000, 11000, 11000, 9000, 23500);
+    reflectance_set_threshold(23500, 9000, 11000, 11000, 9000, 23500); //limit for each sensor, if below limit value is 0 and if above limit value is 1
 
-    while (SW1_Read())
-        ;
+    while (SW1_Read());
 
     reflectance_digital(&dig);
 
-    while (!(dig.L3 || dig.R3)) // checks reflectane of L3 and R3 sensors
+    while (!(dig.L3 || dig.R3)) // checks reflectance of L3 and R3 sensors
     {
         reflectance_digital(&dig);
         motor_forward(50, 0);
@@ -156,7 +155,7 @@ void zmain(void)
     print_mqtt("Zumo4/ready", "%s", line);
 
     IR_wait();
-    reflectance_set_threshold(20000, 9000, 9000, 9000, 9000, 20000);
+    reflectance_set_threshold(20000, 9000, 8000, 8000, 9000, 20000);
     start = xTaskGetTickCount();
     print_mqtt("Zumo4/start", "%d", start);
     reflectance_digital(&dig);
@@ -184,7 +183,7 @@ void zmain(void)
         vTaskDelay(200);
     }
 }
-
+//function to count the horizontal lines
 void countLines(void)
 {
     if (!(pL3 && pR3) && (cL3 && cR3)) //if the value has changed line will be counted
@@ -192,6 +191,7 @@ void countLines(void)
         count++;
     }
 }
+//function to follow the vertical line
 void followLine(void)
 {
     if (!dig.L1) //line following
@@ -207,7 +207,7 @@ void followLine(void)
         motor_forward(255, 0);
     }
 }
-
+//function to check if out of the vertical line
 void missedLine(void)
 {
     if (!dig.L1 && !dig.R1)
@@ -224,7 +224,7 @@ void missedLine(void)
         }
     }
 }
-
+//function to check if the vertical line is found again
 void backInLine(void)
 {
     if (dig.L1 || dig.R1)
